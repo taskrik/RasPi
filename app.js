@@ -19,11 +19,6 @@ app.get('/', function(req, res){
  	res.render('index',{status:"Press Button To change Status of Led !!"});
 });
 
-//testing the EndPoints
-app.get("/", (req, res) => res.send("hello there from the server"));
-app.get("/next-page", (req, res) =>
-  res.json({ page: "Next Page", page1: "blasd" })
-);
 
 //turn led on
 app.post("/led/on", function(req, res) {
