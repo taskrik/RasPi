@@ -7,6 +7,7 @@ const path = require("path");
 
 const gpio = require("rpi-gpio");
 gpio.setup(7, gpio.DIR_OUT);
+gpio.setup(29, gpio.DIR_OUT)
 
 app.set("view engine", "ejs");
 
@@ -35,6 +36,22 @@ app.post("/led/off", function(req, res) {
     console.log("Written False to pin");
     console.log(path.join(__dirname, "public"));
     return res.render("index", { status: "Ohh!! Led is Off" });
+  });
+});
+
+//turn alarm on
+app.post("/alarm/on", function(req, res) {
+  gpio.write(29, true, function(err) {
+    if (err) throw err;
+    return res.render("index", { status: "Alarm is on" });
+  });
+});
+
+//turn alarm off
+app.post("/alarm/off", function(req, res) {
+  gpio.write(29, false, function(err) {
+    if (err) throw err;
+    return res.render("index", { status: "Alarm is on" });
   });
 });
 
