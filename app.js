@@ -25,7 +25,7 @@ let sensor = {
   pin: 15,
   loopTime: 1500,
   tripped: false,
-  value: undefined
+  value: false
 };
 
 app.set("view engine", "ejs");
@@ -91,7 +91,7 @@ app.post("/alarm/on", function(req, res) {
 app.post("/alarm/off", function(req, res) {
   gpio.write(12, false);
   gpio.write(16, false);
-  gpio.white(18, false);
+  gpio.write(18, false);
   gpio.write(29, false, function(err) {
     if (err) throw err;
     return res.render("index", { status: "Alarm is off" });
