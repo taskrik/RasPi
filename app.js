@@ -28,7 +28,6 @@ let sensor = {
   value: undefined
 };
 
-
 app.set("view engine", "ejs");
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -62,13 +61,11 @@ app.post("/led/off", function(req, res) {
 //turn alarm on
 app.post("/alarm/on", function(req, res) {
   //setting up the sensor
-  gpio.setup(sensor.pin, gpio.DIR_IN, onSetup);
-  
-  const onSetup = (error) => {
+  const onSetup = error => {
     if (error) console.error(error);
     return setInterval(readInterval, sensor.loopTime);
-  }
-  
+  };
+
   const readInterval = function() {
     gpio.read(sensor.pin, function(error, value) {
       if (value === sensor.tripped) return (sensor.tripped = value);
@@ -76,6 +73,9 @@ app.post("/alarm/on", function(req, res) {
       else console.log("it's quiet... a little TOO quiet...");
     });
   };
+
+  gpio.setup(sensor.pin, gpio.DIR_IN, onSetup);
+
   if (readInterval) {
     gpio.write(12, true);
     gpio.write(16, true);
@@ -87,16 +87,15 @@ app.post("/alarm/on", function(req, res) {
   }
 });
 
-
 //turn alarm off
 app.post("/alarm/off", function(req, res) {
   gpio.write(12, false);
-    gpio.write(16, false);
-    gpio.white(18, false);
-    gpio.write(29, false, function(err) {
-      if (err) throw err;
-      return res.render("index", { status: "Alarm is off" });
-    });
+  gpio.write(16, false);
+  gpio.white(18, false);
+  gpio.write(29, false, function(err) {
+    if (err) throw err;
+    return res.render("index", { status: "Alarm is off" });
+  });
 });
 
 app.listen(port, () => console.log(`Listening to port ${port}`));
