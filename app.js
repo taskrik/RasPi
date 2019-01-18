@@ -79,7 +79,7 @@ app.post("/alarm/on", function(req, res) {
   if (readInterval) {
     gpio.write(12, true);
     gpio.write(16, true);
-    gpio.white(18, true);
+    gpio.write(18, true);
     gpio.write(29, true, function(err) {
       if (err) throw err;
       return res.render("index", { status: "Alarm is on" });
