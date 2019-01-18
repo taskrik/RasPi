@@ -76,11 +76,12 @@ app.post("/alarm/on", function(req, res) {
 
   gpio.setup(sensor.pin, gpio.DIR_IN, onSetup);
 
-  if (readInterval) {
+  if (readInterval === true) {
     gpio.write(12, true);
     gpio.write(16, true);
     gpio.write(18, true);
     gpio.write(29, true, function(err) {
+      setTimeout(console.log("I am here"), 500);
       if (err) throw err;
       return res.render("index", { status: "Alarm is on" });
     });
