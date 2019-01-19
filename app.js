@@ -7,25 +7,7 @@ const path = require("path");
 
 const gpio = require("rpi-gpio");
 const Gpio = require("onoff").Gpio
-const Lcd = require('lcd');
-
-
-
-//LCD screen
-const lcd = new Lcd({rows: 2});
-
-lcd.on('ready', () => {
-  setInterval(() => {
-    lcd.setCursor(0, 0);
-    lcd.print("Hello world", (err) => {
-      if (err) {
-        throw err;
-      }
-    });
-  }, 1000);
-});
  
-
 
 //setup single led
 const singleLed = new Gpio(4, "out");
@@ -115,7 +97,6 @@ app.post("/alarm/off", function(req, res) {
     gpio.write(12, false);
     gpio.write(16, false);
     gpio.write(18, false);
-    lcd.close();
     pirSensor.unexport()
     buzzer.unexport()
     process.exit()
