@@ -22,17 +22,13 @@ gpio.setup(18, gpio.DIR_OUT);
 
 //sensor
 let sensor = {
-  pin: 15,
-  loopTime: 1500,
-  tripped: false,
-  value: false
+  pin: 15
 };
 
 app.set("view engine", "ejs");
 
 app.use(express.static(path.join(__dirname, "public")));
 
-console.log(path.join(__dirname, "public"));
 
 app.get("/", function(req, res) {
   res.render("index", { status: "Press Button To change Status of Led !!" });
