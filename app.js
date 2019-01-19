@@ -25,12 +25,6 @@ lcd.on('ready', () => {
   }, 1000);
 });
  
-// If ctrl+c is hit, free resources and exit.
-process.on('SIGINT', () => {
-  lcd.close();
-  process.exit();
-});
-
 
 
 //setup single led
@@ -116,14 +110,15 @@ app.post("/alarm/off", function(req, res) {
 });
 
   process.on("SIGINT", function(){
-	console.log("You terminated the programme")
-	singleLed.writeSync(0);
-	gpio.write(12, false);
-  	gpio.write(16, false);
-  	gpio.write(18, false);
-	pirSensor.unexport()
-	buzzer.unexport()
-	process.exit()
+    console.log("You terminated the program")
+    singleLed.writeSync(0);
+    gpio.write(12, false);
+    gpio.write(16, false);
+    gpio.write(18, false);
+    lcd.close();
+    pirSensor.unexport()
+    buzzer.unexport()
+    process.exit()
 
 })
 
