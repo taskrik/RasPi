@@ -6,30 +6,38 @@ const port = 3000;
 const path = require("path");
 
 const gpio = require("rpi-gpio");
+
+const Gpio = require("onoff").Gpio 
+
+
 //setup single led
-gpio.setup(7, gpio.DIR_OUT);
+const singleLed = new Gpio(4, "out");
+
 
 //setup alarm system
+
 //buzzer
-gpio.setup(29, gpio.DIR_OUT);
+const buzzer = new Gpio(5, "out")
 
 //leds
 gpio.setup(12, gpio.DIR_OUT);
 gpio.setup(16, gpio.DIR_OUT);
 gpio.setup(18, gpio.DIR_OUT);
 
-//gpio.setMode(gpio.MODE_RPI);
 
 //sensor
 let sensor = {
-  pin: 15,
-  value: null
+  pin: 22
 };
+
+const pirSensor = new Gpio(sensor.pin, "in", "both")
+
 
 app.set("view engine", "ejs");
 
 app.use(express.static(path.join(__dirname, "public")));
 
+console.log(path.join(__dirname, "public"));
 
 app.get("/", function(req, res) {
   res.render("index", { status: "Press Button To change Status of Led !!" });
@@ -37,63 +45,66 @@ app.get("/", function(req, res) {
 
 //turn led on
 app.post("/led/on", function(req, res) {
-  gpio.write(7, true, function(err) {
-    if (err) throw err;
-    console.log("Written True to pin");
-    console.log(path.join(__dirname, "public"));
-    return res.render("index", { status: "Cool!!Led is On" });
+  
+  singleLed.writeSync(1)
+  return res.render("index", { status: "Cool!!Led is On" });
   });
-});
+
 
 //turn led off
 app.post("/led/off", function(req, res) {
-  gpio.write(7, false, function(err) {
-    if (err) throw err;
-    console.log("Written False to pin");
-    console.log(path.join(__dirname, "public"));
+    singleLed.writeSync(0)
     return res.render("index", { status: "Ohh!! Led is Off" });
-  });
 });
 
 //turn alarm on
 app.post("/alarm/on", function(req, res) {
-  //setting up the sensor
-  const onSetup = error => {
-    if (error) console.error(error);
-    return setInterval(readInterval, sensor.loopTime);
-  };
+	res.render("index", { status: "Alarm is on" });
+	pirSensor.watch(function(err,value){
+	if(value === 1){
+		console.log("Movement detected!", value)
+		gpio.write(12, true);
+  		gpio.write(16, true);
+  		gpio.write(18, true);
+		const iv = setInterval(() => buzzer.writeSync(value),200)
+  		setTimeout(() =>{ 
+		clearInterval(iv)
+		buzzer.writeSync(0) 
+}, 1000)
+	}else {
+	console.log("Area is clear!")
+	gpio.write(12, false);
+  	gpio.write(16, false);
+  	gpio.write(18, false);
+	buzzer.writeSync(0)
+	
+} 
+	})	
+	
 
-  const readInterval = function() {
-    gpio.read(sensor.pin, function(error, value) {
-      if (value === sensor.tripped) return (sensor.tripped = value);
-      if (sensor.tripped) console.log("We have movement!");
-      else console.log("it's quiet... a little TOO quiet...");
-    });
-  };
-
-  gpio.setup(sensor.pin, gpio.DIR_IN, onSetup);
-
-  if (readInterval === true) {
-    gpio.write(12, true);
-    gpio.write(16, true);
-    gpio.write(18, true);
-    gpio.write(29, true, function(err) {
-      setTimeout(console.log("I am here"), 500);
-      if (err) throw err;
-      return res.render("index", { status: "Alarm is on" });
-    });
-  }
 });
+
 
 //turn alarm off
 app.post("/alarm/off", function(req, res) {
-  gpio.write(12, false);
-  gpio.write(16, false);
-  gpio.write(18, false);
-  gpio.write(29, false, function(err) {
-    if (err) throw err;
-    return res.render("index", { status: "Alarm is off" });
-  });
+  res.render("index", { status: "You terminated the programme" });
+ 
+	
 });
+
+  process.on("SIGINT", function(){
+	console.log("You terminated the programme")
+	singleLed.writeSync(0);
+	gpio.write(12, false);
+  	gpio.write(16, false);
+  	gpio.write(18, false);
+	pirSensor.unexport()
+	buzzer.unexport()
+	process.exit()
+
+})
+
+
+
 
 app.listen(port, () => console.log(`Listening to port ${port}`));
