@@ -6,8 +6,31 @@ const port = 3000;
 const path = require("path");
 
 const gpio = require("rpi-gpio");
+const Gpio = require("onoff").Gpio
+const Lcd = require('lcd');
 
-const Gpio = require("onoff").Gpio 
+
+
+//LCD screen
+const lcd = new Lcd({rows: 2});
+
+lcd.on('ready', () => {
+  setInterval(() => {
+    lcd.setCursor(0, 0);
+    lcd.print("Hello world", (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+  }, 1000);
+});
+ 
+// If ctrl+c is hit, free resources and exit.
+process.on('SIGINT', () => {
+  lcd.close();
+  process.exit();
+});
+
 
 
 //setup single led
