@@ -22,7 +22,8 @@ gpio.setup(18, gpio.DIR_OUT);
 
 //sensor
 let sensor = {
-  pin: 15
+  pin: 15,
+  value: null
 };
 
 app.set("view engine", "ejs");
