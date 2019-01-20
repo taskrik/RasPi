@@ -12,6 +12,7 @@
   "dependencies": {
     "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "johnny-five": "^1.0.0",
     "lcd": "^2.0.4",
     "onoff": "^3.2.2",
     "rpi-gpio": "^2.1.2"
