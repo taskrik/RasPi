@@ -11,7 +11,7 @@ board.on("ready", function() {
   });
 
   lcd.print("Hello there!");
-   lcd.clear()
+   
 
    this.repl.inject({
 	lcd: lcd
