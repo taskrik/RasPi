@@ -15,6 +15,7 @@
     "johnny-five": "^1.0.0",
     "lcd": "^2.0.4",
     "onoff": "^3.2.2",
+    "raspi-io": "^9.0.1",
     "rpi-gpio": "^2.1.2"
   },
   "devDependencies": {
