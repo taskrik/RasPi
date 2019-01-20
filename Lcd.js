@@ -17,8 +17,9 @@ const five = require("johnny-five");
 const board = new five.Board();
 
 board.on("ready", function() {
-
-  var lcd = new five.LCD({ pins: [7, 8, 9, 10, 11, 12] });
+  var lcd = new five.LCD({
+    controller: "JHD1313M1"
+  });
 
   lcd.print("Hello");
 });
