@@ -33,8 +33,8 @@ app.get("/", function(req, res) {
 
 board.on("ready", function() {
   const led = new five.Led(7);
-  const motion = new five.Motion(13, {
-    controller: "PIR"
+  const motion = new five.Motion({
+    pin: 13
   });
 
   //turn led on
@@ -59,12 +59,13 @@ board.on("ready", function() {
   motion.on("calibrated", function() {
     console.log("calibrated");
   });
+
   motion.on("motionstart", function() {
-    console.log("motionstart");
+    console.log("There was movement");
   });
 
   motion.on("motionend", function() {
-    console.log("motionend");
+    console.log("Clear");
   });
 
   this.on("exit", function() {
