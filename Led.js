@@ -6,7 +6,9 @@ const board = new five.Board({
 });
 
 board.on("ready", function() {
-  const led = new five.Led(7);
+  const led = new five.Led({
+    pin: "GPIO17"
+  });
 
   led.on();
 
