@@ -1,28 +1,50 @@
 const five = require("johnny-five");
 const Raspi = require("raspi-io");
+const songs = require("j5-songs");
 
 const board = new five.Board({
   io: new Raspi()
 });
 
 board.on("ready", function() {
-  // Create a new `motion` hardware instance.
-  const motion = new five.Motion(7);
-
-  // "calibrated" occurs once, at the beginning of a session,
-  motion.on("calibrated", function() {
-    console.log("calibrated");
+  // Create a standard `piezo` instance on pin 3
+  var piezo = new five.Piezo({
+    pin: "GPIO17"
   });
 
-  // "motionstart" events are fired when the "calibrated"
-  // proximal area is disrupted, generally by some form of movement
-  motion.on("motionstart", function() {
-    console.log("motionstart");
+  board.repl.inject({
+    piezo: piezo
   });
 
-  // "motionend" events are fired following a "motionstart" event
-  // when no movement has occurred in X ms
-  motion.on("motionend", function() {
-    console.log("motionend");
+  // Plays a song
+  piezo.play({
+    // song is composed by an array of pairs of notes and beats
+    // The first argument is the note (null means "no note")
+    // The second argument is the length of time (beat) of the note (or non-note)
+    song: [
+      ["C4", 1 / 4],
+      ["D4", 1 / 4],
+      ["F4", 1 / 4],
+      ["D4", 1 / 4],
+      ["A4", 1 / 4],
+      [null, 1 / 4],
+      ["A4", 1],
+      ["G4", 1],
+      [null, 1 / 2],
+      ["C4", 1 / 4],
+      ["D4", 1 / 4],
+      ["F4", 1 / 4],
+      ["D4", 1 / 4],
+      ["G4", 1 / 4],
+      [null, 1 / 4],
+      ["G4", 1],
+      ["F4", 1],
+      [null, 1 / 2]
+    ],
+    tempo: 100
+  });
+
+  this.on("exit", function() {
+    piezo.off();
   });
 });
