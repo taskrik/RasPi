@@ -32,9 +32,17 @@ app.get("/", function(req, res) {
 });
 
 board.on("ready", function() {
-  const led = new five.Led(7);
-  const motion = new five.Motion({
-    pin: 13
+  //setup Led/Leds
+  const led = new five.Led({
+    pin: "GPIO17"
+  });
+
+  //setup PIR sensor
+  const motion = new five.Motion(7);
+
+  //setup LCD screen
+  const lcd = new five.LCD({
+    controller: "PCF8574A"
   });
 
   //turn led on
@@ -54,22 +62,34 @@ board.on("ready", function() {
   });
 
   //turn alarm on
-  //   app.post("/alarm/on", function(req, res) {
-  //     res.render("index", { status: "Alarm is on" });
-  motion.on("calibrated", function() {
-    console.log("calibrated");
-  });
+  app.post("/alarm/on", function(req, res) {
+    res.render("index", { status: "Alarm is on" });
 
-  motion.on("motionstart", function() {
-    console.log("There was movement");
-  });
+    //count times alarm was triggered
+    let count = 0;
 
-  motion.on("motionend", function() {
-    console.log("Clear");
+    motion.on("calibrated", function() {
+      console.log("Sensor is Ready");
+    });
+
+    motion.on("motionstart", function() {
+      count++;
+      console.log("There was movement");
+      console.log("count:", count);
+      led.blink();
+      lcd.cursor(0, 0).print("Alarm triggered");
+      lcd.cursor(1, 0).print(`${count} times`);
+    });
+
+    motion.on("motionend", function() {
+      console.log("All Clear");
+      led.stop().off();
+    });
   });
 
   this.on("exit", function() {
     led.off();
+    lcd.off();
   });
 });
 
