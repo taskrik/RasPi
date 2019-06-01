@@ -1,9 +1,7 @@
 const five = require("johnny-five");
-const Raspi = require("raspi-io");
 
-const board = new five.Board({
-  io: new Raspi()
-});
+
+const board = new five.Board()
 
 board.on("ready", function() {
   const led = new five.Led({
