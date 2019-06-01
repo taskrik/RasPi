@@ -1,14 +1,16 @@
 const five = require("johnny-five");
+const Raspi = require("raspi-io").RaspiIO;
 
+const board = new five.Board({
+  io: new Raspi()
+});
 
-const board = new five.Board()
+board.on("ready", function () {
+  console.log("Board ready!");
+  
+  const led = new five.Led("GPIO4");
 
-board.on("ready", function() {
-  const led = new five.Led({
-    pin: "GPIO17"
-  });
-
-  led.on();
+  led.blink();
 
   this.on("exit", function() {
     led.off();
