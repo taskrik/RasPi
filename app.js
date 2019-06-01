@@ -93,27 +93,4 @@ board.on("ready", function() {
   });
 });
 
-// this.on("exit", function() {
-//   led.off();
-// });
-// });
-
-// //turn alarm off
-// app.post("/alarm/off", function(req, res) {
-//   res.render("index", { status: "You terminated the programme" });
-
-// });
-
-//   process.on("SIGINT", function(){
-//     console.log("You terminated the program")
-//     singleLed.writeSync(0);
-//     gpio.write(12, false);
-//     gpio.write(16, false);
-//     gpio.write(18, false);
-//     pirSensor.unexport()
-//     buzzer.unexport()
-//     process.exit()
-
-// })
-
 app.listen(port, () => console.log(`Listening to port ${port}`));
